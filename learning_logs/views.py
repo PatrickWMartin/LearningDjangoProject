@@ -6,6 +6,6 @@ def index(request):
     return render(request, 'learning_logs/index.html')
 
 
-def topics(requst):
+def all_topics(requst):
     topics = Topic.objects.order_by('date_added')
-    return render(requst, 'learning_logs/topics.html', {'topics': topics})
+    return render(requst, 'learning_logs/all_topics.html', {'topics': topics})
