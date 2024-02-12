@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from .models import Topic
 from .forms import TopicForm
 
+
 # Create your views here.
 def index(request):
     return render(request, 'learning_logs/index.html')
@@ -26,7 +27,7 @@ def new_topic(request):
             form.save()
             return redirect('learning_logs:all_topics')
 
-        else:
-            form = TopicForm()
+    else:
+        form = TopicForm()
 
     return render(request, 'learning_logs/new_topic.html', {'form': form})
