@@ -45,4 +45,4 @@ def new_entry(request, topic_id):
     else:
         form = EntryForm()
 
-    return render(request, 'learning_logs/new_entry.html', {'form': form})
+    return render(request, 'learning_logs/new_entry.html', {'topic': topic_object, 'form': form})
