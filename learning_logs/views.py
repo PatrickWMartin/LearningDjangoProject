@@ -2,22 +2,24 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Topic, Entry
 from .forms import TopicForm, EntryForm
+from django.http import Http404
 
 
-# Create your views here.
 def index(request):
     return render(request, 'learning_logs/index.html')
 
 
 @login_required
-def all_topics(requst):
-    topics = Topic.objects.order_by('date_added')
-    return render(requst, 'learning_logs/all_topics.html', {'topics': topics})
+def all_topics(request):
+    topics = Topic.objects.filter(owner=request.user).order_by('date_added')
+    return render(request, 'learning_logs/all_topics.html', {'topics': topics})
 
 
 @login_required
 def topic(request, topic_id):
     topic_object = Topic.objects.get(id=topic_id)
+    if topic.owner != request.user:
+        raise Http404
     entries = topic_object.entry_set.order_by('-date_added')
     return render(request, 'learning_logs/topic.html',
                   {'topic': topic_object, 'entries': entries})
@@ -28,7 +30,9 @@ def new_topic(request):
     if request.method == 'POST':
         form = TopicForm(data=request.POST)
         if form.is_valid():
-            form.save()
+            new_topic = form.save(commit=False)
+            new_topic.owner = request.user
+            new_topic.save()
             return redirect('learning_logs:topics')
     else:
         form = TopicForm()
@@ -57,6 +61,8 @@ def new_entry(request, topic_id):
 def edit_entry(request, entry_id):
     entry_object = Entry.objects.get(id=entry_id)
     topic = entry_object.topic
+    if topic.owner != request.user:
+        raise Http404
 
     if request.method == 'POST':
         form = EntryForm(data=request.POST)
