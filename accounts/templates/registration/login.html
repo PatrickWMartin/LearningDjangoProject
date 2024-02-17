@@ -6,7 +6,7 @@
     <p>Username or password incorrect</p>
 {% endif %}
 
-<form action="{% url 'accounts:login' %}">
+<form action="{% url 'accounts:login' %}" method='post'>
     {% csrf_token %}
     {{ form.as_div }}
 
