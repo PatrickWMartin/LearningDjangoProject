@@ -6,5 +6,6 @@
         Hello, {{user.username}}
     {% else %}
         <a href="{% url 'accounts:login' %}">Log in</a>
+    {% endif %}
 </p>
 {% block content %}{% endblock content %}
